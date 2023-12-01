@@ -1,0 +1,80 @@
+#+OPTIONS: ^:nil tags:nil num:nil
+
+* About
+
+Lint multiple org files.
+
+* Table of Contents                                       :TOC_2_gh:QUOTE:
+#+BEGIN_QUOTE
+- [[#about][About]]
+- [[#requirements][Requirements]]
+- [[#installation][Installation]]
+  - [[#with-use-package-and-straightel][With use-package and straight.el]]
+  - [[#manual-installation][Manual installation]]
+- [[#usage][Usage]]
+#+END_QUOTE
+
+* Requirements
+
+| Name  | Version |
+|-------+---------|
+| Emacs |    29.1 |
+
+
+* Installation
+
+** With use-package and straight.el
+#+begin_src elisp :eval no
+(use-package lint-org
+  :straight (lint-org
+             :repo "KarimAziev/lint-org"
+             :type git
+             :host github)
+  :bind ((:map lint-org-report-mode-map
+          ("RET" . lint-org-jump-to-source)
+          ("C-j" . lint-org-show-source)))
+  :commands (lint-org))
+#+end_src
+
+** Manual installation
+
+Download the source code and put it wherever you like, e.g. into =~/.emacs.d/lint-org/=
+
+#+begin_src shell :eval no
+git clone https://github.com/KarimAziev/lint-org.git ~/.emacs.d/lint-org/
+#+end_src
+
+Add the downloaded directory to the load path:
+
+#+begin_src elisp :eval no
+(add-to-list 'load-path "~/.emacs.d/lint-org/")
+(require 'lint-org)
+#+end_src
+
+* Usage
+
+To run =lint-org= on a single Org file or interactively in the current Org buffer:
+
+#+begin_src elisp
+M-x lint-org
+#+end_src
+
+=lint-org= checks for issues in Org files and reports them in a separate buffer. Navigation commands within the report buffer are as follows:
+
+- =RET= or =Enter=: Jump to the source of the issue in the corresponding Org file.
+
+- =TAB= or =C-j=: Display the source without moving focus to the Org file.
+
+To refresh the lint reports, especially after making modifications that would impact the validity of the issues, you can execute:
+
+#+begin_src elisp
+M-x revert-buffer
+#+end_src
+
+In the lint report buffer. This will re-run the lint checks and update the reports for all previously listed Org files.
+
+When called with a prefix argument (usually =C-u=), =lint-org= will operate on all =.org= files within the =org-directory= and its subdirectories:
+
+#+begin_src elisp
+C-u M-x lint-org
+#+end_src
