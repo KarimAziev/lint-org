@@ -220,7 +220,7 @@ operate on all .org files in `org-directory' and its subdirectories recursively.
                                                 "\\.org\\'")
                  (directory-files org-directory t "\\.org\\'" t))))
     (dolist-with-progress-reporter (file files)
-        (format "Linting %s" (length files))
+        (format "Linting %s files" (length files))
       (when (file-exists-p file)
         (delay-mode-hooks
           (let ((buff (or (get-file-buffer file)
