@@ -66,7 +66,7 @@ selected after jumping."
           (widen))
         (goto-char pos)
         (org-fold-show-set-visibility 'local)
-        (if-let ((buff-wnd (get-buffer-window buff)))
+        (if-let* ((buff-wnd (get-buffer-window buff)))
             (select-window buff-wnd)
           (select-window (or (car (delq nil
                                         (mapcar (lambda (fn)
@@ -137,7 +137,7 @@ Argument CHECKERS is a list of checker functions to use for generating reports."
 Remaining arguments BODY are forms that are evaluated with the current buffer
 set to the report buffer found by `lint-org-find-report-buffer'."
   (let ((buffer (make-symbol "buffer")))
-    `(when-let ((,buffer (lint-org-find-report-buffer)))
+    `(when-let* ((,buffer (lint-org-find-report-buffer)))
       (with-current-buffer ,buffer
        (progn ,@body)))))
 
@@ -146,7 +146,7 @@ set to the report buffer found by `lint-org-find-report-buffer'."
 
 Argument BUFFER-OR-NAME is either a buffer or the name of an existing buffer to
 be refreshed."
-  (when-let ((buff (if (bufferp buffer-or-name)
+  (when-let* ((buff (if (bufferp buffer-or-name)
                        buffer-or-name
                      (get-buffer buffer-or-name))))
     (when (buffer-live-p buff)
@@ -197,9 +197,9 @@ Argument REPORTS is a list of report entries to be rendered."
         (reports))
     (dolist-with-progress-reporter (buff-name buffs)
         (format "Processing %s" (length buffs))
-      (when-let ((buff (get-buffer buff-name)))
+      (when-let* ((buff (get-buffer buff-name)))
         (when (buffer-live-p buff)
-          (when-let ((report
+          (when-let* ((report
                       (lint-org-generate-reports buff
                                                        org-lint--checkers)))
             (setq reports (append reports report))))))
@@ -226,7 +226,7 @@ operate on all .org files in `org-directory' and its subdirectories recursively.
           (let ((buff (or (get-file-buffer file)
                           (let ((inhibit-message t))
                             (find-file-noselect file t)))))
-            (when-let ((report
+            (when-let* ((report
                         (lint-org-generate-reports buff
                                                    org-lint--checkers)))
               (setq reports (append reports report)))))))
